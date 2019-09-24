@@ -23,7 +23,7 @@ def prepare_completed_image(completed_art_name):
             submit_image_and_get_id(completed_art_name)
         except Exception as e:
             print('what happened: ' + str(e))
-    	    previously_completed_art_name = completed_art_name
+            previously_completed_art_name = completed_art_name
 
 
 
