@@ -19,6 +19,7 @@ def prepare_completed_image(completed_art_name):
     art_piece = db.search(street_art_query(completed_art_name))
     if (len(art_piece) > 0):
         completed_art_piece = art_piece[0]
+        previously_completed_art_name = completed_art_name
         submit_image_and_get_id(completed_art_name)
 
 
@@ -112,7 +113,5 @@ def on_created_handler(event):
     if (is_location_blob(event)):
         update_db(art_name, 'location_data', event, 'has_geo')
         print('Save location')
-
-    previously_completed_art_name = art_name
 
     _check_modification(event.src_path)
