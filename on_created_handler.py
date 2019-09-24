@@ -1,5 +1,5 @@
 
-
+import json
 from tinydb import TinyDB, Query
 
 from send_file_to_publicart import submit_image_and_get_id
@@ -31,10 +31,10 @@ def _check_modification(filename):
 
 def update_db(art_name, type_data, event, type_bool):
     with open(event.src_path) as blob_data:
-        db.insert({
-            'name': art_name,
-            'type': type_data,
-            'blob': blob_data})
+        # db.insert({
+        #     'name': art_name,
+        #     'type': type_data,
+        #     'blob': blob_data})
         new_value_dict = {}
         new_value_dict[type_bool] = True
         db.update(new_value_dict, street_art_query(art_name))
