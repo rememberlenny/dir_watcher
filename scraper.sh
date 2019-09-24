@@ -4,4 +4,5 @@
 
 cd ~/
 cd ~/Spaceship/publicart
-`instaloader --login streetarrrrt --no-videos --no-compress-json --geotags "#streetart"`
+workon insta
+instaloader --login streetarrrrt --no-videos --no-compress-json --geotags "#streetart"
