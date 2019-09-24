@@ -16,8 +16,8 @@ class _CustomHandler(FileSystemEventHandler):
     def on_created(self, event):
         try:
             on_created_handler(event)
-        except:
-            print('Data not loaded')
+        except Exception, e:
+    	    print('Error: '+ str(e)) 
 
 
 if __name__ == "__main__":
