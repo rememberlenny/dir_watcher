@@ -25,5 +25,17 @@ Add to cronjob by:
 
 and add: 
 
-`@reboot sh /home/pi/Spaceship/publicart/dir_watcher/scraper.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1`
-`@reboot sh /home/pi/Spaceship/publicart/dir_watcher/launcher.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1`
+```
+@reboot sh /home/pi/Spaceship/publicart/dir_watcher/scraper.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1
+@reboot sh /home/pi/Spaceship/publicart/dir_watcher/launcher.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1
+```
+
+## Extra notes
+
+`sudo apt-get install python3 python3-pip virtualenvwrapper`
+
+`mkvirtualenv -p /usr/bin/python3 insta`
+
+`workon insta`
+
+`pip install instaloader`

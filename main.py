@@ -16,7 +16,7 @@ class _CustomHandler(FileSystemEventHandler):
     def on_created(self, event):
         try:
             on_created_handler(event)
-        except Exception, e:
+        except Exception as e:
     	    print('Error: '+ str(e)) 
 
 
