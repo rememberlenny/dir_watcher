@@ -19,7 +19,12 @@ def prepare_completed_image(completed_art_name):
     art_piece = db.search(street_art_query(completed_art_name))
     if (len(art_piece) > 0):
         completed_art_piece = art_piece[0]
-        submit_image_and_get_id(completed_art_name)
+        try:
+            submit_image_and_get_id(completed_art_name)
+        except Exception as e:
+            print('what happened: ' + str(e))
+    	    previously_completed_art_name = completed_art_name
+
 
 
 def _check_modification(filename):
@@ -83,7 +88,6 @@ def on_created_handler(event):
     art_name = file_name_without_extension[0]
 
     if (art_name != previously_completed_art_name):
-        previously_completed_art_name = art_name
         prepare_completed_image(previously_completed_art_name)
 
     # Query for the name existing
@@ -113,5 +117,6 @@ def on_created_handler(event):
     if (is_location_blob(event)):
         update_db(art_name, 'location_data', event, 'has_geo')
         print('Save location')
-
+    
+    previously_completed_art_name = art_name
     _check_modification(event.src_path)
