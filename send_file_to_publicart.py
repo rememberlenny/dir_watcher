@@ -99,8 +99,10 @@ def submit_image_and_get_id(art_name):
                 generate_metadata(picture_id, data)
 
                 completed_upload(art_name)
+
         for i in range(length):
-                move_files_to_old_folder(completed_art_name)
+                move_files_to_old_folder(art_name)
+
 
 def completed_upload(completed_art_name):
     Art = Query()
