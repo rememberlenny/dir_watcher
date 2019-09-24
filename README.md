@@ -32,10 +32,8 @@ and add:
 
 ## Extra notes
 
-`sudo apt-get install python3 python3-pip virtualenvwrapper`
+Need instaloader session in `project/pwd/`.
 
-`mkvirtualenv -p /usr/bin/python3 insta`
+`pip3 install instaloader`
 
-`workon insta`
 
-`pip install instaloader`
