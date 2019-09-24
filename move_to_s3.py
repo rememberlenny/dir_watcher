@@ -1,7 +1,8 @@
 import boto3
 
 BUCKET_NAME = 'publicart-indexer'
-OBJECT_NAME = 'pa-rpi1-indexer/'
+OBJECT_PATH = 'pa-rpi1-indexer/'
+FILE_NAME = 'test.txt'
 
 import logging
 import boto3
@@ -36,8 +37,8 @@ def main():
 
     # Set these values before running the program
     bucket_name = BUCKET_NAME
-    file_name = 'test.txt'
-    object_name = OBJECT_NAME
+    file_name = FILE_NAME
+    object_name = OBJECT_PATH + FILE_NAME
 
     # Set up logging
     logging.basicConfig(level=logging.DEBUG,
