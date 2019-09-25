@@ -9,6 +9,7 @@ from watchdog.events import FileSystemEventHandler
 
 from on_created_handler import on_created_handler
 
+print('Starting monitoring tool')
 
 class _CustomHandler(FileSystemEventHandler):
     def on_created(self, event):
