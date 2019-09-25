@@ -4,8 +4,6 @@ import logging
 import json
 import requests
 
-from pathlib import Path
-
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
