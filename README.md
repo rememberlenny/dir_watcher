@@ -26,8 +26,8 @@ Add to cronjob by:
 and add: 
 
 ```
-@reboot sh /home/pi/Spaceship/publicart/dir_watcher/scraper.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1
-@reboot sh /home/pi/Spaceship/publicart/dir_watcher/launcher.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1
+@reboot bash /home/pi/Spaceship/publicart/dir_watcher/scraper.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1
+@reboot bash /home/pi/Spaceship/publicart/dir_watcher/launcher.sh > /home/pi/Spaceship/publicart/logs/cronlog 2>&1
 ```
 
 ## Extra notes
