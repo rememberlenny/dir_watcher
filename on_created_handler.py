@@ -1,10 +1,14 @@
 
+import os
 import json
 from tinydb import TinyDB, Query
 
 from send_file_to_publicart import submit_image_and_get_id
 
-db = TinyDB('dir_watcher/download-data.json')
+LOCAL_DB_LOCATION = os.getenv('APP_SCRIPT_PATH') + os.getenv('LOCAL_DB_FILE_NAME')
+HASHTAG = os.getenv('INSTAGRAM_INDEX_HASHTAG')
+
+db = TinyDB(LOCAL_DB_LOCATION)
 
 previously_completed_art_name = ''
 SESSION_COUNT = 0
@@ -82,7 +86,7 @@ def on_created_handler(event):
     new_count = 0
 
     # Get the image "name"
-    file_name_base = event.src_path.split('/#streetart/')
+    file_name_base = event.src_path.split('/#' + HASHTAG + '/')
     file_name_in_folder = file_name_base[1]
     file_name_without_extension = file_name_in_folder.split('_UTC')
     art_name = file_name_without_extension[0]

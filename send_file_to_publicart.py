@@ -14,14 +14,17 @@ from tinydb import TinyDB, Query
 
 from move_to_s3 import upload_file
 
+LOCAL_DB_LOCATION = os.getenv('APP_SCRIPT_PATH') + os.getenv('LOCAL_DB_FILE_NAME')
+HASHTAG = os.getenv('INSTAGRAM_INDEX_HASHTAG')
+
 q = Queue(connection=Redis())
-db = TinyDB('dir_watcher/download-data.json')
+db = TinyDB(LOCAL_DB_LOCATION)
 
 IS_PROD = True
 PROD_URL = 'https://www.publicart.io'
 STAG_URL = 'https://publicart-site-staging.herokuapp.com'
 ROOT_URL = PROD_URL if IS_PROD else STAG_URL
-IMAGE_ROOT_PATH = './#streetart/'
+IMAGE_ROOT_PATH = './#' + HASHTAG + '/'
 LOCATION_POST_FIX = '_location.txt'
 JPG_POST_FIX = '.jpg'
 LOCATION_UTC_POST_FIX = '_UTC' + LOCATION_POST_FIX
@@ -29,11 +32,11 @@ API_URL = ROOT_URL + '/pictures?no_partial=1'
 METADATA_URL = ROOT_URL + '/pictures/metadata'
 GENERIC_HEADER = {'Content-type': 'multipart/form-data'}
 GOOGLE_MAPS_URL_BASE = 'https://maps.google.com/maps?q='
-TRANSFERED_ART_DIR = 'transfered_streetart'
-DEFAULT_ART_DIR = '#streetart'
+TRANSFERED_ART_DIR = 'transfered_' + HASHTAG
+DEFAULT_ART_DIR = '#' + HASHTAG
 
 def move_files_to_old_folder(art_name):
-    art_name_related_files = glob.glob('./#streetart/' + art_name + '*')
+    art_name_related_files = glob.glob('./#' + HASHTAG + '/' + art_name + '*')
     length = len(art_name_related_files)
     for i in range(length):
         new_path = art_name_related_files[i].replace(
@@ -49,7 +52,7 @@ def delete_file(file_name):
 
         
 def move_file_without_location_to_s3(art_name):
-    art_name_related_files = glob.glob('./#streetart/' + art_name + '*')
+    art_name_related_files = glob.glob('./#' + HASHTAG + '/' + art_name + '*')
     length = len(art_name_related_files)
     for i in range(length):
         file_name = art_name_related_files[i]
