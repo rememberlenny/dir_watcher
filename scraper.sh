@@ -12,4 +12,4 @@ sleep 5
 echo 'Starting in 5...'
 sleep 5
 echo 'Running instaloader'
-python /home/pi/Spaceship/publicart/dir_watcher/main.py & instaloader --login streetarrrrt --sessionfile /home/pi/Spaceship/publicart/pwd/.instaloader-session  --no-videos --no-compress-json --geotags "#streetart"
+python /home/pi/Spaceship/publicart/dir_watcher/main.py & instaloader --login streetarrrrt --sessionfile /home/pi/Spaceship/publicart/pwd/.instaloader-session  --no-videos --no-compress-json --geotags "#graffiti"
