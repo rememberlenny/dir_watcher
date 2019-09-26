@@ -12,6 +12,8 @@ from redis import Redis
 from rq import Queue
 from tinydb import TinyDB, Query
 
+from move_to_s3 import upload_file
+
 q = Queue(connection=Redis())
 db = TinyDB('dir_watcher/download-data.json')
 
@@ -39,6 +41,19 @@ def move_files_to_old_folder(art_name):
         print('Moved ' + new_path)
         shutil.move(art_name_related_files[i], new_path)
 
+
+def delete_file(file_name):
+    print('Deleting ' + file_name)
+    shutil.rmtree(file_name)
+
+        
+def move_file_without_location_to_s3(art_name):
+    art_name_related_files = glob.glob('./#streetart/' + art_name + '*')
+    length = len(art_name_related_files)
+    for i in range(length):
+        file_name = art_name_related_files[i]
+        upload_file_job = q.enqueue(upload_file, file_name)
+        delete_file = q.enqueue(delete_file, depends_on=upload_file_job, args=(file_name))
 
 def after_submit_image_get_id(r):
     json_data = json.loads(r.text)
@@ -75,6 +90,7 @@ def submit_image_and_get_id(art_name):
     potential_location_file = IMAGE_ROOT_PATH + art_name + LOCATION_UTC_POST_FIX
     my_file = Path(potential_location_file)
 
+    # If it has a location related data point
     if my_file.is_file():
         [location_name, latlon] = get_location_details(potential_location_file)
         date_of_image = get_date_from_name(art_name)
@@ -100,9 +116,11 @@ def submit_image_and_get_id(art_name):
 
                 completed_upload(art_name)
 
-        for i in range(length):
-                move_files_to_old_folder(art_name)
+        move_files_to_old_folder(art_name)
 
+    # If it doesn't have a location related data point
+    else:
+        move_file_without_location_to_s3(art_name)
 
 def completed_upload(completed_art_name):
     Art = Query()
