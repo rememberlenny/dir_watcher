@@ -53,7 +53,7 @@ def move_file_without_location_to_s3(art_name):
     for i in range(length):
         file_name = art_name_related_files[i]
         upload_file_job = q.enqueue(upload_file, file_name)
-        delete_file = q.enqueue(delete_file, depends_on=upload_file_job, args=(file_name))
+        delete_file_job = q.enqueue(delete_file, depends_on=upload_file_job, args=(file_name))
 
 def after_submit_image_get_id(r):
     json_data = json.loads(r.text)
