@@ -19,7 +19,7 @@ IS_PROD = True
 PROD_URL = 'https://www.publicart.io'
 STAG_URL = 'https://publicart-site-staging.herokuapp.com'
 ROOT_URL = PROD_URL if IS_PROD else STAG_URL
-IMAGE_ROOT_PATH = './#streetart/'
+IMAGE_ROOT_PATH = './#graffiti/'
 LOCATION_POST_FIX = '_location.txt'
 JPG_POST_FIX = '.jpg'
 LOCATION_UTC_POST_FIX = '_UTC' + LOCATION_POST_FIX
@@ -27,11 +27,11 @@ API_URL = ROOT_URL + '/pictures?no_partial=1'
 METADATA_URL = ROOT_URL + '/pictures/metadata'
 GENERIC_HEADER = {'Content-type': 'multipart/form-data'}
 GOOGLE_MAPS_URL_BASE = 'https://maps.google.com/maps?q='
-TRANSFERED_ART_DIR = 'transfered_streetart'
-DEFAULT_ART_DIR = '#streetart'
+TRANSFERED_ART_DIR = 'transfered_graffiti'
+DEFAULT_ART_DIR = '#graffiti'
 
 def move_files_to_old_folder(art_name):
-    art_name_related_files = glob.glob('./#streetart/' + art_name + '*')
+    art_name_related_files = glob.glob('./#graffiti/' + art_name + '*')
     length = len(art_name_related_files)
     for i in range(length):
         new_path = art_name_related_files[i].replace(

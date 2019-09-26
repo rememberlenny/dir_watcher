@@ -82,7 +82,7 @@ def on_created_handler(event):
     new_count = 0
 
     # Get the image "name"
-    file_name_base = event.src_path.split('/#streetart/')
+    file_name_base = event.src_path.split('/#graffiti/')
     file_name_in_folder = file_name_base[1]
     file_name_without_extension = file_name_in_folder.split('_UTC')
     art_name = file_name_without_extension[0]
