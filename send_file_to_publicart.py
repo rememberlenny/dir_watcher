@@ -40,6 +40,7 @@ def move_files_to_old_folder(art_name):
             DEFAULT_ART_DIR, TRANSFERED_ART_DIR)
         print('Moved ' + new_path)
         shutil.move(art_name_related_files[i], new_path)
+        delete_file(new_path)
 
 
 def delete_file(file_name):
