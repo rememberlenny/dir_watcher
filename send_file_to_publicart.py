@@ -122,6 +122,7 @@ def submit_image_and_get_id(art_name):
     else:
         move_file_without_location_to_s3(art_name)
 
+
 def completed_upload(completed_art_name):
     Art = Query()
     db.update({'was_uploaded': True}, ((Art.name == completed_art_name) & (Art.type == 'streetart')))
