@@ -1,4 +1,4 @@
-# Directory Watcher
+# Public Art Watcher
 
 Work with instaloader to upload street art photos to publilcart
 
@@ -35,5 +35,3 @@ and add:
 Need instaloader session in `project/pwd/`.
 
 `pip3 install instaloader`
-
-

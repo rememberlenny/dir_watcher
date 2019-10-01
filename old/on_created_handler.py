@@ -5,8 +5,12 @@ from tinydb import TinyDB, Query
 
 from send_file_to_publicart import submit_image_and_get_id
 
-LOCAL_DB_LOCATION = os.getenv('APP_SCRIPT_PATH') + os.getenv('LOCAL_DB_FILE_NAME')
-HASHTAG = os.getenv('INSTAGRAM_INDEX_HASHTAG')
+LOCAL_DB_FILE_NAME = os.getenv('LOCAL_DB_FILE_NAME') if os.getenv('LOCAL_DB_FILE_NAME') else ""
+APP_SCRIPT_PATH = os.getenv('APP_SCRIPT_PATH') if os.getenv('APP_SCRIPT_PATH') else ""
+INSTAGRAM_INDEX_HASHTAG = os.getenv('INSTAGRAM_INDEX_HASHTAG') if os.getenv('INSTAGRAM_INDEX_HASHTAG') else ""
+
+LOCAL_DB_LOCATION = APP_SCRIPT_PATH + LOCAL_DB_FILE_NAME
+HASHTAG = INSTAGRAM_INDEX_HASHTAG
 
 db = TinyDB(LOCAL_DB_LOCATION)
 
@@ -82,6 +86,7 @@ def add_image_record(art_name, new_count, event):
 
 
 def on_created_handler(event):
+    print('on_created_handler')
     global previously_completed_art_name
     new_count = 0
 

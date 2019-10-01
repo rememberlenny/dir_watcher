@@ -14,13 +14,20 @@ from tinydb import TinyDB, Query
 
 from move_to_s3 import upload_file
 
-LOCAL_DB_LOCATION = os.getenv('APP_SCRIPT_PATH') + os.getenv('LOCAL_DB_FILE_NAME')
-HASHTAG = os.getenv('INSTAGRAM_INDEX_HASHTAG')
+LOCAL_DB_FILE_NAME = os.getenv('LOCAL_DB_FILE_NAME') if os.getenv(
+    'LOCAL_DB_FILE_NAME') else ""
+APP_SCRIPT_PATH = os.getenv('APP_SCRIPT_PATH') if os.getenv(
+    'APP_SCRIPT_PATH') else ""
+INSTAGRAM_INDEX_HASHTAG = os.getenv('INSTAGRAM_INDEX_HASHTAG') if os.getenv(
+    'INSTAGRAM_INDEX_HASHTAG') else ""
+
+LOCAL_DB_LOCATION = APP_SCRIPT_PATH + LOCAL_DB_FILE_NAME
+HASHTAG = INSTAGRAM_INDEX_HASHTAG
+IS_PROD = os.getenv('IS_PROD')
 
 q = Queue(connection=Redis())
 db = TinyDB(LOCAL_DB_LOCATION)
 
-IS_PROD = True
 PROD_URL = 'https://www.publicart.io'
 STAG_URL = 'https://publicart-site-staging.herokuapp.com'
 ROOT_URL = PROD_URL if IS_PROD else STAG_URL
@@ -34,6 +41,7 @@ GENERIC_HEADER = {'Content-type': 'multipart/form-data'}
 GOOGLE_MAPS_URL_BASE = 'https://maps.google.com/maps?q='
 TRANSFERED_ART_DIR = 'transfered_' + HASHTAG
 DEFAULT_ART_DIR = '#' + HASHTAG
+
 
 def move_files_to_old_folder(art_name):
     art_name_related_files = glob.glob('./#' + HASHTAG + '/' + art_name + '*')
@@ -50,7 +58,7 @@ def delete_file(file_name):
     print('Deleting ' + file_name)
     shutil.rmtree(file_name)
 
-        
+
 def move_file_without_location_to_s3(art_name):
     art_name_related_files = glob.glob('./#' + HASHTAG + '/' + art_name + '*')
     length = len(art_name_related_files)
@@ -101,25 +109,26 @@ def submit_image_and_get_id(art_name):
         date_of_image = get_date_from_name(art_name)
         image_file_name = potential_location_file.replace(
             LOCATION_POST_FIX, JPG_POST_FIX)
-        
+
         Art = Query()
-        art_piece_images = db.search((Art.name == art_name) & (Art.type == 'image'))
-        
-        length = len(art_piece_images) 
-        for i in range(length): 
-                file_path = art_piece_images[i]['file_path']
-                print(art_piece_images[i]['file_path']) 
+        art_piece_images = db.search(
+            (Art.name == art_name) & (Art.type == 'image'))
 
-                files = {'file': open(file_path, 'rb')}
-                file_response = requests.post(API_URL, files=files)
-                picture_id = after_submit_image_get_id(file_response)
+        length = len(art_piece_images)
+        for i in range(length):
+            file_path = art_piece_images[i]['file_path']
+            print(art_piece_images[i]['file_path'])
 
-                # data = {"location_name": location_name, "file_name": art_name, "latitude": latlon[0], "longitude": latlon[1]}
-                data = {"date_of_image": date_of_image, "location_name": location_name, "file_name": art_name,
-                        "latitude": latlon[0], "longitude": latlon[1], "picture_id": picture_id}
-                generate_metadata(picture_id, data)
+            files = {'file': open(file_path, 'rb')}
+            file_response = requests.post(API_URL, files=files)
+            picture_id = after_submit_image_get_id(file_response)
 
-                completed_upload(art_name)
+            # data = {"location_name": location_name, "file_name": art_name, "latitude": latlon[0], "longitude": latlon[1]}
+            data = {"date_of_image": date_of_image, "location_name": location_name, "file_name": art_name,
+                    "latitude": latlon[0], "longitude": latlon[1], "picture_id": picture_id}
+            generate_metadata(picture_id, data)
+
+            completed_upload(art_name)
 
         move_files_to_old_folder(art_name)
 
@@ -130,5 +139,6 @@ def submit_image_and_get_id(art_name):
 
 def completed_upload(completed_art_name):
     Art = Query()
-    db.update({'was_uploaded': True}, ((Art.name == completed_art_name) & (Art.type == 'streetart')))
+    db.update({'was_uploaded': True},
+              ((Art.name == completed_art_name) & (Art.type == 'streetart')))
     print('Piece uploaded: ' + completed_art_name)
