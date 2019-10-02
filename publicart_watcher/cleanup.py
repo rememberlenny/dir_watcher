@@ -18,7 +18,7 @@ HASHTAG = 'streetart'
 INSTAGRAM_USER_NAME = 'streetarrrrt'
 INSTAGRAM_USER_PAME = 'password123!'
 INSTAGRAM_INDEX_HASHTAG = HASHTAG
-IS_PROD = False
+IS_PROD = True
 
 print(APP_PATH_ROOT)
 
@@ -115,7 +115,7 @@ def submit_image_and_get_id(location_path):
         print(art_piece_images[i])
         upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
 
-    # delete_files(date_of_image)
+    delete_files(date_of_image)
 
 
 def cleanup_images():
