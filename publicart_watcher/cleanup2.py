@@ -11,6 +11,7 @@ dirpath = os.getcwd()
 foldername = os.path.basename(dirpath)
 
 HOME_DIR = dirpath
+APP_ROOT = '/home/lkbgift/Spaceship/datasets'
 
 APP_PATH_ROOT = HOME_DIR
 APP_SCRIPT_PATH = APP_PATH_ROOT
@@ -39,13 +40,16 @@ TRANSFERED_ART_DIR = 'transfered_' + HASHTAG
 DEFAULT_ART_DIR = '#' + HASHTAG
 
 
-def delete_files(date_time):
-    art_piece_images = glob.glob('/home/lkbgift/Spaceship/datasets/#' + HASHTAG + '/' + date_time + '*')
+
+def delete_files(time_stamp):
+    print('Running delete')
+    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + time_stamp + '*')
     length = len(art_piece_images)
-    print('Images total ' + str(length))
+    print('Deleting total ' + str(length))
     for i in range(length):
+        print('Deleting ' + str(i) + ' of ' + str(length))
         os.remove(art_piece_images[i])
-        print('Deleted ' + str(art_piece_images[i]))
+        print('Delete confirmed ' + str(art_piece_images[i]))
 
 
 def after_submit_image_get_id(r):
@@ -75,7 +79,7 @@ def upload_file_to_publicart(file_path, date_of_image, location_name, art_name, 
     else:
         print('issue ', file_path)
         time.sleep(15)
-        upload_file_to_publicart(file_path)
+        upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
 
 
 def get_location_details(file_path):
@@ -101,25 +105,26 @@ def submit_image_and_get_id(location_path):
     # media_id, date, location
     date = location_path.split(HASHTAG + '/')[1]
     date_of_image = get_date_from_name(date)
-    art_piece_images = glob.glob('/home/lkbgift/Spaceship/datasets/#' + HASHTAG + '/' + date_of_image + '*.jpg')
+    time_stamp = date.split('_UTC')[0]
+    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + time_stamp + '*.jpg')
     json_path = location_path.replace('_location.txt', '.json')
     with open(json_path) as json_file:
         data = json.load(json_file)
     art_name = data['node']['id']
 
     length = len(art_piece_images)
-    print('Images total ' + str(length))
+    print('Images total ' + str(length) + ' for ' + date_of_image)
     for i in range(length):
-        print('Uploading ' + str(i))
+        print('Uploading ' + str(i) + ' of ' + str(length))
         file_path = art_piece_images[i]
         print(art_piece_images[i])
         upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
 
-    delete_files(date_of_image)
+    delete_files(time_stamp)
 
 
 def cleanup_images():
-    file_path_string = '/home/lkbgift/Spaceship/datasets/#' + HASHTAG + '/*' + LOCATION_POST_FIX
+    file_path_string = APP_ROOT + '/#' + HASHTAG + '/*' + LOCATION_POST_FIX
     print('Searching '+ file_path_string)
 
     location_images = glob.glob(file_path_string)
@@ -127,6 +132,7 @@ def cleanup_images():
     print('Starting clean up ' + str(len(location_images)))
     length = len(location_images)
     for i in range(length):
+        print('Cleanup ' + str(i) + " of " + str(length))
         location_path = location_images[i]
         submit_image_and_get_id(location_path)
 
