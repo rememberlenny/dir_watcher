@@ -78,7 +78,7 @@ def upload_file_to_publicart(file_path, date_of_image, location_name, art_name, 
     else:
         print('issue ', file_path)
         time.sleep(15)
-        upload_file_to_publicart(file_path)
+        upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
 
 
 def get_location_details(file_path):
