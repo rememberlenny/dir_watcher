@@ -118,8 +118,10 @@ def submit_image_and_get_id(location_path):
 
 
 def cleanup_images():
+    file_path_string = '/home/pi/Spaceship/publicart/#' + HASHTAG + '/*' + LOCATION_POST_FIX
+    print('Searching '+ file_path_string)
 
-    location_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/*' + LOCATION_POST_FIX)
+    location_images = glob.glob(file_path_string)
 
     print('Starting clean up ' + str(len(location_images)))
     length = len(location_images)
