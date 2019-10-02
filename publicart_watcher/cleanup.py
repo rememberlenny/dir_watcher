@@ -40,7 +40,7 @@ DEFAULT_ART_DIR = '#' + HASHTAG
 
 
 def delete_files(date_time):
-    art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_time + '*')
+    art_piece_images = glob.glob('/home/lkbgift/Spaceship/datasets/#' + HASHTAG + '/' + date_time + '*')
     length = len(art_piece_images)
     print('Images total ' + str(length))
     for i in range(length):
@@ -101,7 +101,7 @@ def submit_image_and_get_id(location_path):
     # media_id, date, location
     date = location_path.split(HASHTAG + '/')[1]
     date_of_image = get_date_from_name(date)
-    art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_of_image + '*.jpg')
+    art_piece_images = glob.glob('/home/lkbgift/Spaceship/datasets/#' + HASHTAG + '/' + date_of_image + '*.jpg')
     json_path = location_path.replace('_location.txt', '.json')
     with open(json_path) as json_file:
         data = json.load(json_file)
@@ -119,7 +119,7 @@ def submit_image_and_get_id(location_path):
 
 
 def cleanup_images():
-    file_path_string = '/home/pi/Spaceship/publicart/#' + HASHTAG + '/*' + LOCATION_POST_FIX
+    file_path_string = '/home/lkbgift/Spaceship/datasets/#' + HASHTAG + '/*' + LOCATION_POST_FIX
     print('Searching '+ file_path_string)
 
     location_images = glob.glob(file_path_string)
