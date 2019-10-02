@@ -1,58 +1,29 @@
-import sys
 import time
-import logging
 import json
 import requests
-import os
 import shutil
 import glob
-import boto3
-import instaloader
-from pathlib import Path
-from redis import Redis
-from rq import Queue
-from botocore.exceptions import ClientError
-from watchdog.observers import Observer
-# from watchdog.events import FileSystemEventHandler
-from watchdog.events import LoggingEventHandler
-from multiprocessing import Process
-from tinydb import TinyDB, Query
+import os
 
 print('Starting monitoring tool')
-
-import os
 
 dirpath = os.getcwd()
 foldername = os.path.basename(dirpath)
 
 HOME_DIR = dirpath
 
-IS_PROD = False
 APP_PATH_ROOT = HOME_DIR
 APP_SCRIPT_PATH = APP_PATH_ROOT
-S3_BUCKET_NAME = 'publicart-indexer'
-LOCAL_DB_FILE_NAME = 'database-data.json'
+HASHTAG = 'streetart'
 INSTAGRAM_USER_NAME = 'streetarrrrt'
 INSTAGRAM_USER_PAME = 'password123!'
-INSTAGRAM_INDEX_HASHTAG = 'streetart'
-INSTAGRAM_SESSION_LOCATION = APP_PATH_ROOT + 'pwd/.instaloader-session'
-LOCAL_DB_LOCATION = APP_PATH_ROOT + LOCAL_DB_FILE_NAME
+INSTAGRAM_INDEX_HASHTAG = HASHTAG
 IS_PROD = True
 
 print(APP_PATH_ROOT)
 
-HASHTAG = 'streetart'
-BUCKET_NAME = 'publicart-indexer'
-OBJECT_PATH = 'pa-rpi1-indexer/'
-FILE_NAME = 'test.txt'
-LOCAL_DB_FILE_NAME = LOCAL_DB_FILE_NAME if LOCAL_DB_FILE_NAME else ""
-APP_SCRIPT_PATH = APP_SCRIPT_PATH if APP_SCRIPT_PATH else ""
-INSTAGRAM_INDEX_HASHTAG = INSTAGRAM_INDEX_HASHTAG if INSTAGRAM_INDEX_HASHTAG else ""
-
 previously_completed_art_name = ''
-SESSION_COUNT = 0
 
-IS_PROD = True
 PROD_URL = 'https://www.publicart.io'
 STAG_URL = 'https://publicart-site-staging.herokuapp.com'
 ROOT_URL = PROD_URL if IS_PROD else STAG_URL
@@ -68,9 +39,14 @@ TRANSFERED_ART_DIR = 'transfered_' + HASHTAG
 DEFAULT_ART_DIR = '#' + HASHTAG
 
 
-def delete_folder(media_id):
-    shutil.rmtree(APP_PATH_ROOT + '/images/' + str(media_id))
-    print('Deleted ' + str(media_id))
+def delete_files(date_time):
+    art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_of_image + '*')
+    length = len(art_piece_images)
+    print('Images total ' + str(length))
+    for i in range(length):
+        os.remove(art_piece_images[i])
+        print('Deleted ' + str(art_piece_images[i]))
+
 
 def after_submit_image_get_id(r):
     json_data = json.loads(r.text)
@@ -78,21 +54,14 @@ def after_submit_image_get_id(r):
     return picture_id
 
 
-def get_date_from_name(date):
-    return date.strftime("%m-%d-%Y_%H-%M-%S")
-
-
-
 def generate_metadata(picture_id, data):
-    # pprint(data)
     r = requests.post(METADATA_URL, data=data)
-    # r = requests.post(api_url, files=files, data=data, headers=headers)
-    # print(r.text)
 
 
-def upload_file_to_publicart(media_id, file_path, date_of_image, location):
+def upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon):
     files = {'file': open(file_path, 'rb')}
     file_response = requests.post(API_URL, files=files)
+
     print('response ', file_response)
     if file_response.ok:
         print('success ', file_path)
@@ -100,47 +69,58 @@ def upload_file_to_publicart(media_id, file_path, date_of_image, location):
         print('picture_id ', str(picture_id))
 
         # data = {"location_name": location_name, "file_name": art_name, "latitude": latlon[0], "longitude": latlon[1]}
-        data = {"date_of_image": date_of_image, "location_name": location.name, "file_name": media_id,
-                "latitude": location.lat, "longitude": location.lng, "picture_id": picture_id}
+        data = {"date_of_image": date_of_image, "location_name": location_name, "file_name": art_name,
+                "latitude": latlon[0], "longitude": latlon[1], "picture_id": picture_id}
         generate_metadata(picture_id, data)
     else:
         print('issue ', file_path)
         time.sleep(15)
         upload_file_to_publicart(file_path)
 
-def submit_image_and_get_id(media_id, date, location):
-    art_piece_images = glob.glob(HOME_DIR + '/images/' + str(media_id) + '/*.jpg')
+
+def get_location_details(file_path):
+    with open(file_path) as f:
+        lines = f.readlines()
+        location_name = lines[0]
+        latlongquery = lines[1].split(GOOGLE_MAPS_URL_BASE)
+        latlongblock = latlongquery[1].split('&ll=')
+        latlonpoints = latlongblock[0].split(',')
+        #     latitude = latlonpoints[0]
+        #     longitude = latlonpoints[1]
+        return [location_name, latlonpoints]
+
+
+def get_date_from_name(name):
+    name_of_file_parts = name.split('_')
+    date_of_image = name_of_file_parts[0]
+    return date_of_image
+
+
+def submit_image_and_get_id(location_path):
+    [location_name, latlon] = get_location_details(location_path)
+    # media_id, date, location
     date_of_image = get_date_from_name(date)
+    art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_of_image + '*.jpg')
+    json_path = location_path.replace('_location.txt', '.json')
+    with open(json_path as json_file:
+        data = json.load(json_file)
+    art_name = data['node']['id']
 
     length = len(art_piece_images)
     print('Images total ' + str(length))
     for i in range(length):
         print('Uploading ' + str(i))
-        file_path = art_piece_images[i]
-        print(art_piece_images[i])
-        upload_file_to_publicart(media_id, file_path, date_of_image, location)
+    file_path = art_piece_images[i]
+    print(art_piece_images[i])
+    upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
 
-    delete_folder(media_id)
+    delete_files(date_of_image)
 
 
+def cleanup_images():
+    location_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/*' + LOCATION_POST_FIX)
+    for location_path in location_images:
+        submit_image_and_get_id(location_path)
 
-def upload_file(file_name):
-    """Upload a file to an S3 bucket
-    :param file_name: File to upload
-    :param bucket: Bucket to upload to
-    :param object_name: S3 object name. If not specified then same as file_name
-    :return: True if file was uploaded, else False
-    """
 
-    # If S3 object_name was not specified, use file_name
-    if object_name is None:
-        object_name = file_name
-
-    # Upload the file
-    s3_client = boto3.client('s3')
-    try:
-        response = s3_client.upload_file(file_name, BUCKET_NAME, OBJECT_PATH + file_name)
-    except ClientError as e:
-        print(str(e))
-        return False
-    return True
+cleanup_images()
