@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import publicartwatcher
+import publicart_watcher
 
 class TestOnCreated(TestCase):
     def test_is_string(self):

@@ -1,10 +1,7 @@
-import platform
 import setuptools
-import subprocess
 
 from pipenv.project import Project
 from pipenv.utils import convert_deps_to_pip
-from sys import version_info
 
 pipfile = Project(chdir=False).parsed_pipfile
 
@@ -17,17 +14,20 @@ def readme():
 
 setuptools.setup(
     name="publicart_watcher",
-    version="0.0.2",  # PEP-440
+    version="0.0.4",  # PEP-440
     description="Library to help index street art",
     long_description=readme(),
     url="https://publicart.io",
     author="Public Art LLC",
-    author_email="hello@publicart.io",
+    author_email="lenny@publicart.io",
     license="Apache 2",
     packages=setuptools.find_packages(exclude=["tests", "tests.*"]),
     # Requirements
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.5',
     zip_safe=False,  # install source files not egg
     include_package_data=True,  # copy html and friends
+    entry_points={
+        'console_scripts': ['publicart-watcher=publicart_watcher.command_line:main'],
+    },
 )

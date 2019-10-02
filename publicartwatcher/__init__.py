@@ -1,1 +1,0 @@
-name = "publicart_watcher"

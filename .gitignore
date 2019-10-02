@@ -1,5 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+images/
+\#streetart/
 *.py[cod]
 *$py.class
 
@@ -98,7 +100,7 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
+publicart_watcher/config.ini
 .venv
 env/
 venv/

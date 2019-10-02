@@ -18,9 +18,11 @@ sphinx-rtd-theme = "*"
 recommonmark = "*"
 
 [packages]
+instaloader = "*"
 watchdog = "*"
 boto3 = "*"
-redis = "*"
 rq = "*"
+redis = "*"
 pathlib = "*"
-sqlite3 = "*"
+tinydb = "*"
+pipenv = "*"
