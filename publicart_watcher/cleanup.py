@@ -102,7 +102,7 @@ def submit_image_and_get_id(location_path):
     date_of_image = get_date_from_name(date)
     art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_of_image + '*.jpg')
     json_path = location_path.replace('_location.txt', '.json')
-    with open(json_path as json_file:
+    with open(json_path as json_file):
         data = json.load(json_file)
     art_name = data['node']['id']
 
