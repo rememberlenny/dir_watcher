@@ -104,7 +104,8 @@ def submit_image_and_get_id(location_path):
     # media_id, date, location
     date = location_path.split(HASHTAG + '/')[1]
     date_of_image = get_date_from_name(date)
-    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + date_of_image + '*.jpg')
+    time_stamp = date.split('_UTC')[0]
+    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + time_stamp + '*.jpg')
     json_path = location_path.replace('_location.txt', '.json')
     with open(json_path) as json_file:
         data = json.load(json_file)
