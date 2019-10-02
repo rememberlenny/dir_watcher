@@ -11,6 +11,7 @@ dirpath = os.getcwd()
 foldername = os.path.basename(dirpath)
 
 HOME_DIR = dirpath
+APP_ROOT = '/home/pi/Spaceship/publicart'
 
 APP_PATH_ROOT = HOME_DIR
 APP_SCRIPT_PATH = APP_PATH_ROOT
@@ -40,12 +41,14 @@ DEFAULT_ART_DIR = '#' + HASHTAG
 
 
 def delete_files(date_time):
-    art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_time + '*')
+    print('Running delete')
+    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + date_time + '*')
     length = len(art_piece_images)
-    print('Images total ' + str(length))
+    print('Deleting total ' + str(length))
     for i in range(length):
+        print('Deleting ' + str(i) + ' of ' + str(length))
         os.remove(art_piece_images[i])
-        print('Deleted ' + str(art_piece_images[i]))
+        print('Delete confirmed ' + str(art_piece_images[i]))
 
 
 def after_submit_image_get_id(r):
@@ -101,16 +104,16 @@ def submit_image_and_get_id(location_path):
     # media_id, date, location
     date = location_path.split(HASHTAG + '/')[1]
     date_of_image = get_date_from_name(date)
-    art_piece_images = glob.glob('/home/pi/Spaceship/publicart/#' + HASHTAG + '/' + date_of_image + '*.jpg')
+    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + date_of_image + '*.jpg')
     json_path = location_path.replace('_location.txt', '.json')
     with open(json_path) as json_file:
         data = json.load(json_file)
     art_name = data['node']['id']
 
     length = len(art_piece_images)
-    print('Images total ' + str(length))
+    print('Images total ' + str(length) + ' for ' + date_of_image)
     for i in range(length):
-        print('Uploading ' + str(i))
+        print('Uploading ' + str(i) + ' of ' + str(length))
         file_path = art_piece_images[i]
         print(art_piece_images[i])
         upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
@@ -119,7 +122,7 @@ def submit_image_and_get_id(location_path):
 
 
 def cleanup_images():
-    file_path_string = '/home/pi/Spaceship/publicart/#' + HASHTAG + '/*' + LOCATION_POST_FIX
+    file_path_string = APP_ROOT + '/#' + HASHTAG + '/*' + LOCATION_POST_FIX
     print('Searching '+ file_path_string)
 
     location_images = glob.glob(file_path_string)
@@ -127,6 +130,7 @@ def cleanup_images():
     print('Starting clean up ' + str(len(location_images)))
     length = len(location_images)
     for i in range(length):
+        print('Cleanup ' + str(i) + " of " + str(length))
         location_path = location_images[i]
         submit_image_and_get_id(location_path)
 
