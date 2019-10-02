@@ -40,9 +40,9 @@ TRANSFERED_ART_DIR = 'transfered_' + HASHTAG
 DEFAULT_ART_DIR = '#' + HASHTAG
 
 
-def delete_files(date_time):
+def delete_files(time_stamp):
     print('Running delete')
-    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + date_time + '*')
+    art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + time_stamp + '*')
     length = len(art_piece_images)
     print('Deleting total ' + str(length))
     for i in range(length):
@@ -119,7 +119,7 @@ def submit_image_and_get_id(location_path):
         print(art_piece_images[i])
         upload_file_to_publicart(file_path, date_of_image, location_name, art_name, latlon)
 
-    delete_files(date_of_image)
+    delete_files(time_stamp)
 
 
 def cleanup_images():
