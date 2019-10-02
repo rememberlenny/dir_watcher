@@ -107,9 +107,12 @@ def submit_image_and_get_id(location_path):
     time_stamp = date.split('_UTC')[0]
     art_piece_images = glob.glob(APP_ROOT + '/#' + HASHTAG + '/' + time_stamp + '*.jpg')
     json_path = location_path.replace('_location.txt', '.json')
-    with open(json_path) as json_file:
-        data = json.load(json_file)
-    art_name = data['node']['id']
+    if (os.path.exists(json_path)):
+        with open(json_path) as json_file:
+            data = json.load(json_file)
+        art_name = data['node']['id']
+    else:
+        art_name = time_stamp
 
     length = len(art_piece_images)
     print('Images total ' + str(length) + ' for ' + date_of_image)
