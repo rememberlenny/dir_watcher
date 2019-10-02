@@ -90,6 +90,23 @@ def generate_metadata(picture_id, data):
     # print(r.text)
 
 
+def upload_file_to_publicart(media_id, file_path, date_of_image, location):
+    files = {'file': open(file_path, 'rb')}
+    file_response = requests.post(API_URL, files=files)
+    print('response ', file_response)
+    if file_response.ok:
+        print('success ', file_path)
+        picture_id = after_submit_image_get_id(file_response)
+        print('picture_id ', str(picture_id))
+
+        # data = {"location_name": location_name, "file_name": art_name, "latitude": latlon[0], "longitude": latlon[1]}
+        data = {"date_of_image": date_of_image, "location_name": location.name, "file_name": media_id,
+                "latitude": location.lat, "longitude": location.lng, "picture_id": picture_id}
+        generate_metadata(picture_id, data)
+    else:
+        print('issue ', file_path)
+        time.sleep(15)
+        upload_file_to_publicart(file_path)
 
 def submit_image_and_get_id(media_id, date, location):
     art_piece_images = glob.glob(HOME_DIR + '/images/' + str(media_id) + '/*.jpg')
@@ -101,16 +118,7 @@ def submit_image_and_get_id(media_id, date, location):
         print('Uploading ' + str(i))
         file_path = art_piece_images[i]
         print(art_piece_images[i])
-
-        files = {'file': open(file_path, 'rb')}
-        file_response = requests.post(API_URL, files=files)
-        print('response ', file_response)
-        picture_id = after_submit_image_get_id(file_response)
-
-        # data = {"location_name": location_name, "file_name": art_name, "latitude": latlon[0], "longitude": latlon[1]}
-        data = {"date_of_image": date_of_image, "location_name": location.name, "file_name": media_id,
-                "latitude": location.lat, "longitude": location.lng, "picture_id": picture_id}
-        generate_metadata(picture_id, data)
+        upload_file_to_publicart(media_id, file_path, date_of_image, location)
 
     delete_folder(media_id)
 
